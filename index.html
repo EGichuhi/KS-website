@@ -1015,13 +1015,20 @@
     };
 
     try {
-      const res = await fetch(MAKE_WEBHOOK_URL, {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ ...payload, access_key: WEB3FORMS_KEY })
       });
-      // Make webhooks return 200 with an "Accepted" body on success
-      if (res.ok) {
+      const result = await res.json();
+      if (result.success) {
+        formMsg.textContent = '✓ Your message has been sent! I\'ll be in touch within 48 hours.';
+        formMsg.className = 'form-msg success';
+        form.reset();
+      } else {
+        throw new Error(result.message || 'Submission failed');
+      }
+          if (res.ok) {
         formMsg.textContent = '✓ Your message has been sent! I\'ll be in touch within 48 hours.';
         formMsg.className = 'form-msg success';
         form.reset();
