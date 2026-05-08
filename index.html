@@ -143,54 +143,73 @@
     /* ─── HERO ──────────────────────────────────────────────── */
     #hero {
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 7rem 2rem 4rem;
-      max-width: 1160px;
-      margin: 0 auto;
-      gap: 4rem;
+      display: flex;
+      align-items: flex-end;
+      padding: 0;
+      max-width: 100%;
+      margin: 0;
+      gap: 0;
       position: relative;
+      overflow: hidden;
     }
-    .hero-bg {
-      position: fixed; inset: 0; z-index: -1; overflow: hidden;
-      background: linear-gradient(135deg, #F7F8FA 0%, #EEF4FF 50%, #F7F8FA 100%);
+    /* Full-bleed background image */
+    .hero-bg-img {
+      position: absolute; inset: 0; z-index: 0;
     }
+    .hero-bg-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+    }
+    /* Multi-layer overlay: left dark for text readability + subtle blue tint */
+    .hero-bg-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, rgba(15,23,42,0.82) 0%, rgba(15,23,42,0.55) 55%, rgba(15,23,42,0.15) 100%),
+        linear-gradient(to top, rgba(15,23,42,0.6) 0%, transparent 50%);
+    }
+    /* Animated blob accents on top of overlay */
     .hero-blob-1 {
-      position: absolute; width: 600px; height: 600px;
+      position: absolute; width: 700px; height: 700px;
       background: radial-gradient(circle, #4DA3FF 0%, transparent 70%);
-      top: -200px; right: -100px; opacity: 0.15;
-      filter: blur(100px); animation: drift1 12s ease-in-out infinite;
+      top: -250px; left: -100px; opacity: 0.12;
+      filter: blur(120px); animation: drift1 14s ease-in-out infinite; z-index: 1;
     }
     .hero-blob-2 {
       position: absolute; width: 400px; height: 400px;
       background: radial-gradient(circle, #A78BFA 0%, transparent 70%);
-      bottom: 0; left: 10%; opacity: 0.12;
-      filter: blur(80px); animation: drift2 16s ease-in-out infinite;
+      bottom: 10%; right: 5%; opacity: 0.1;
+      filter: blur(80px); animation: drift2 18s ease-in-out infinite; z-index: 1;
     }
     @keyframes drift1 {
       0%,100% { transform: translate(0,0) scale(1); }
-      50% { transform: translate(-40px, 60px) scale(1.1); }
+      50% { transform: translate(40px, 60px) scale(1.1); }
     }
     @keyframes drift2 {
       0%,100% { transform: translate(0,0) scale(1); }
-      50% { transform: translate(30px,-40px) scale(1.05); }
+      50% { transform: translate(-30px,-40px) scale(1.05); }
     }
 
-    .hero-text { position: relative; z-index: 1; }
+    /* Text content sits over everything */
+    .hero-text {
+      position: relative; z-index: 2;
+      max-width: 1160px; width: 100%; margin: 0 auto;
+      padding: 10rem 2rem 5rem;
+    }
     .hero-eyebrow { margin-bottom: 1.5rem; }
     .hero-headline {
       font-family: var(--serif);
-      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
-      font-weight: 700; line-height: 1.08;
+      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      font-weight: 700; line-height: 1.05;
       letter-spacing: -0.02em;
-      color: var(--text);
+      color: #F1F5F9;
       margin-bottom: 1.5rem;
+      max-width: 640px;
     }
-    .hero-headline em { font-style: italic; color: var(--blue); }
+    .hero-headline em { font-style: italic; color: #7CC4FF; }
     .hero-sub {
-      font-size: 1.1rem; color: var(--text2);
-      line-height: 1.85; max-width: 460px;
+      font-size: 1.1rem; color: rgba(241,245,249,0.75);
+      line-height: 1.85; max-width: 500px;
       margin-bottom: 2.5rem;
     }
     .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3.5rem; }
@@ -207,73 +226,30 @@
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 0.85rem 2rem;
-      background: transparent; color: var(--text);
+      background: rgba(255,255,255,0.1); color: #F1F5F9;
       font-size: 0.9rem; font-weight: 600;
-      border-radius: 100px; border: 1.5px solid var(--border);
+      border-radius: 100px; border: 1.5px solid rgba(255,255,255,0.25);
+      backdrop-filter: blur(8px);
       transition: all var(--transition); cursor: pointer;
     }
-    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-glow); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
 
     .hero-stats {
-      display: flex; gap: 2.5rem;
+      display: flex; gap: 2.5rem; flex-wrap: wrap;
       padding-top: 2.5rem;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(255,255,255,0.15);
+      max-width: 500px;
     }
-    .stat { }
     .stat-num {
       font-family: var(--serif);
       font-size: 2.4rem; font-weight: 700;
-      color: var(--text); line-height: 1;
+      color: #F1F5F9; line-height: 1;
     }
-    .stat-label { font-size: 0.78rem; color: var(--text3); font-weight: 500; margin-top: 4px; }
+    .stat-label { font-size: 0.78rem; color: rgba(241,245,249,0.55); font-weight: 500; margin-top: 4px; }
 
-    /* Hero image */
-    .hero-visual { position: relative; z-index: 1; }
-    .hero-card {
-      background: var(--surface);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-    }
-    .hero-card img {
-      width: 100%; aspect-ratio: 4/5;
-      object-fit: cover; object-position: top center;
-    }
-    .hero-card-overlay {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 2rem;
-      background: linear-gradient(to top, rgba(46,52,64,0.7) 0%, transparent 100%);
-    }
-    .hero-card-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 100px; padding: 8px 16px;
-      font-size: 0.82rem; font-weight: 600; color: var(--text);
-    }
-    .hero-card-badge .dot { width:8px;height:8px;border-radius:50%;background:var(--blue);animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.7} }
-
-    .hero-float-card {
-      position: absolute;
-      background: var(--surface); border-radius: var(--radius);
-      box-shadow: var(--shadow-md);
-      padding: 1rem 1.25rem;
-    }
-    .hero-float-1 { bottom: 2.5rem; left: -2.5rem; min-width: 170px; }
-    .hero-float-2 { top: 2.5rem; right: -2rem; }
-    .float-label { font-size: 0.7rem; color: var(--text3); font-weight: 500; margin-bottom: 4px; }
-    .float-val { font-size: 1rem; font-weight: 700; color: var(--text); }
-    .float-sub { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
-    .float-avatars { display: flex; margin-top: 8px; }
-    .float-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--blue-glow); border: 2px solid #fff;
-      margin-left: -8px; first-child {margin-left:0}
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.65rem; font-weight: 700; color: var(--blue);
-    }
-    .float-avatars .float-avatar:first-child { margin-left: 0; }
+    /* Tag on dark hero background */
+    #hero .tag { background: rgba(77,163,255,0.2); color: #7CC4FF; border: 1px solid rgba(77,163,255,0.3); }
+    #hero .tag::before { background: #7CC4FF; }
 
     /* ─── ABOUT ─────────────────────────────────────────────── */
     #about {
@@ -286,14 +262,23 @@
     }
     .about-image-col { position: relative; }
     .about-img-wrap {
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
+      border-radius: 0;
+      overflow: visible;
+      box-shadow: none;
       aspect-ratio: 4/5;
+      background: transparent;
     }
     .about-img-wrap img {
       width: 100%; height: 100%;
       object-fit: cover; object-position: top;
+      border-radius: var(--radius-xl);
+      /* Fade into white background on all edges, strongest at bottom */
+      -webkit-mask-image: radial-gradient(ellipse 88% 88% at 50% 38%, black 35%, transparent 78%),
+                          linear-gradient(to bottom, black 45%, transparent 100%);
+      -webkit-mask-composite: intersect;
+      mask-image: radial-gradient(ellipse 88% 88% at 50% 38%, black 35%, transparent 78%),
+                  linear-gradient(to bottom, black 45%, transparent 100%);
+      mask-composite: intersect;
     }
     .about-accent {
       position: absolute; top: -1.5rem; right: -1.5rem;
@@ -592,8 +577,8 @@
     }
 
     @media (max-width: 900px) {
-      #hero { grid-template-columns: 1fr; padding-top: 8rem; gap: 3rem; }
-      .hero-visual { display: none; }
+      #hero { min-height: 100svh; }
+      .hero-text { padding: 9rem 1.5rem 4rem; }
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
       .about-image-col { display: none; }
       .services-header { grid-template-columns: 1fr; gap: 1.5rem; }
@@ -629,14 +614,16 @@
   </div>
 </nav>
 
-<!-- Animated gradient background -->
-<div class="hero-bg" aria-hidden="true">
-  <div class="hero-blob-1"></div>
-  <div class="hero-blob-2"></div>
-</div>
-
 <!-- ═══ HERO ═════════════════════════════════════════════════ -->
 <section id="hero" aria-label="Hero section">
+  <!-- Full-bleed background image -->
+  <div class="hero-bg-img" aria-hidden="true">
+    <img src="assets/img/hero-group.png" alt="" role="presentation" loading="eager" />
+  </div>
+  <!-- Animated colour blobs -->
+  <div class="hero-blob-1" aria-hidden="true"></div>
+  <div class="hero-blob-2" aria-hidden="true"></div>
+
   <div class="hero-text">
     <div class="hero-eyebrow reveal">
       <span class="tag">Visionary Leadership &amp; Community Impact</span>
@@ -669,34 +656,6 @@
       </div>
     </div>
   </div>
-
-  <div class="hero-visual" aria-hidden="true">
-    <div class="hero-card">
-      <img src="https://jackiekariuki.ca/assets/img/profile/profile-1.webp" alt="Jacqueline Kariuki" loading="eager" />
-      <div class="hero-card-overlay">
-        <div class="hero-card-badge">
-          <div class="dot"></div>
-          Available for Consulting
-        </div>
-      </div>
-    </div>
-    <!-- Floating info cards -->
-    <div class="hero-float-card hero-float-1">
-      <div class="float-label">Community Reach</div>
-      <div class="float-val">3+ Countries</div>
-      <div class="float-sub">Canada · Kenya · Beyond</div>
-    </div>
-    <div class="hero-float-card hero-float-2">
-      <div class="float-label">Happy Clients</div>
-      <div class="float-val">500+</div>
-      <div class="float-avatars">
-        <div class="float-avatar">JK</div>
-        <div class="float-avatar">MA</div>
-        <div class="float-avatar">SL</div>
-        <div class="float-avatar" style="background:rgba(255,107,107,0.15);color:#FF6B6B">+</div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- ═══ ABOUT ═════════════════════════════════════════════════ -->
@@ -706,7 +665,7 @@
       <div class="about-image-col reveal">
         <div class="about-accent" aria-hidden="true"></div>
         <div class="about-img-wrap">
-          <img src="https://jackiekariuki.ca/assets/img/profile/profile-square-2.webp" alt="Jacqueline Kariuki portrait" loading="lazy" />
+          <img src="assets/img/profile/profile-square-2.webp" alt="Jacqueline Kariuki portrait" loading="lazy" />
         </div>
         <div class="about-detail-cards">
           <div class="about-detail-item">
