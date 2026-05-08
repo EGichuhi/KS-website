@@ -956,55 +956,23 @@
   // Trigger hero reveals immediately
   document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
 
-  // ── Make Webhook form submission ──────────────────────────
-  const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL'; // ← paste your Make webhook URL here
+  form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (!form.checkValidity()) { form.reportValidity(); return; }
 
-  const form = document.getElementById('contactForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const formMsg = document.getElementById('formMsg');
+  const data = new FormData(form);
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!form.checkValidity()) { form.reportValidity(); return; }
+  const subject = encodeURIComponent('New Inquiry from jackiekariuki.ca — ' + data.get('service'));
+  const body = encodeURIComponent(
+    'Name: ' + data.get('first_name') + ' ' + data.get('last_name') + '\n' +
+    'Email: ' + data.get('email') + '\n' +
+    'Phone: ' + (data.get('phone') || 'Not provided') + '\n' +
+    'Service: ' + data.get('service') + '\n\n' +
+    'Message:\n' + data.get('message')
+  );
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-    formMsg.className = 'form-msg';
-
-    const data = new FormData(form);
-    const payload = {
-      first_name:  data.get('first_name'),
-      last_name:   data.get('last_name'),
-      email:       data.get('email'),
-      phone:       data.get('phone') || '',
-      service:     data.get('service'),
-      message:     data.get('message'),
-      submitted_at: new Date().toISOString(),
-      source: 'jackiekariuki.ca'
-    };
-
-    try {
-      const res = await fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      // Make webhooks return 200 with an "Accepted" body on success
-      if (res.ok) {
-        formMsg.textContent = '✓ Your message has been sent! I\'ll be in touch within 48 hours.';
-        formMsg.className = 'form-msg success';
-        form.reset();
-      } else {
-        throw new Error('Webhook returned ' + res.status);
-      }
-    } catch (err) {
-      formMsg.textContent = 'Something went wrong. Please email me directly at jackiekariuki@gmail.com';
-      formMsg.className = 'form-msg error';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
-    }
-  });
+  window.location.href = 'mailto:hello@jackiekariuki.ca?subject=' + subject + '&body=' + body;
+});
 </script>
 </body>
 </html>
