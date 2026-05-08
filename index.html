@@ -957,7 +957,7 @@
   document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
 
   // ── Make Webhook form submission ──────────────────────────
-  const WEB3FORMS_KEY = '3422b1fe-2e3c-4e31-b4cd-eb4d5861a033';
+  const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL'; // ← paste your Make webhook URL here
 
   const form = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
@@ -984,26 +984,25 @@
     };
 
     try {
-        const response = await fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            alert("Success! Your message has been sent.");
-            form.reset();
-        } else {
-            alert("Error: " + data.message);
-        }
-
-    } catch (error) {
-        alert("Something went wrong. Please message us at hello@jackiekariuki.ca");
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      // Make webhooks return 200 with an "Accepted" body on success
+      if (res.ok) {
+        formMsg.textContent = '✓ Your message has been sent! I\'ll be in touch within 48 hours.';
+        formMsg.className = 'form-msg success';
+        form.reset();
+      } else {
+        throw new Error('Webhook returned ' + res.status);
+      }
+    } catch (err) {
+      formMsg.textContent = 'Something went wrong. Please email me directly at jackiekariuki@gmail.com';
+      formMsg.className = 'form-msg error';
     } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }n.textContent = 'Send Message';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
     }
   });
 </script>
