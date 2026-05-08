@@ -17,23 +17,30 @@
 
     /* ─── DESIGN TOKENS ────────────────────────────────────── */
     :root {
-  --bg:        #FAFAF9;
-  --surface:   #FFFFFF;
-  --surface2:  #F0FDFA;
-  --blue:      #FF7849;        /* vibrant orange-coral */
-  --blue-dark: #E85D2F;
-  --blue-glow: rgba(255,120,73,0.15);
-  --coral:     #0D9488;        /* teal as secondary */
-  --coral-pale:#F0FDFA;
-  --text:      #1C1917;
-  --text2:     #57534E;
-  --text3:     #A8A29E;
-  --border:    rgba(28,25,23,0.08);
-  --shadow-sm: 0 2px 12px rgba(255,120,73,0.08);
-  --shadow-md: 0 8px 32px rgba(255,120,73,0.12);
-  --shadow-lg: 0 20px 60px rgba(28,25,23,0.12);
+      --bg:        #F7F8FA;
+      --surface:   #FFFFFF;
+      --surface2:  #EEF2FF;
+      --blue:      #4DA3FF;
+      --blue-dark: #1A7FE0;
+      --blue-glow: rgba(77,163,255,0.18);
+      --coral:     #FF6B6B;
+      --coral-pale:#FFF0F0;
+      --text:      #2E3440;
+      --text2:     #5A6276;
+      --text3:     #9AA0B0;
+      --border:    rgba(46,52,64,0.08);
+      --shadow-sm: 0 2px 12px rgba(77,163,255,0.08);
+      --shadow-md: 0 8px 32px rgba(77,163,255,0.12);
+      --shadow-lg: 0 20px 60px rgba(46,52,64,0.12);
+      --radius-sm: 10px;
+      --radius:    16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --serif: 'Fraunces', Georgia, serif;
+      --transition: 0.28s cubic-bezier(0.4,0,0.2,1);
     }
-  /* keep radius, font, transition unchanged */
+
     body {
       font-family: var(--sans);
       background: var(--bg);
@@ -649,37 +656,6 @@
       </div>
     </div>
   </div>
-<<<<<<< HEAD
-=======
-
-  <div class="hero-visual" aria-hidden="true">
-    <div class="hero-card">
-      <img src="assets/img/profile/profile-1.webp" alt="Jacqueline Kariuki" loading="eager" />
-      <div class="hero-card-overlay">
-        <div class="hero-card-badge">
-          <div class="dot"></div>
-          Available for Consulting
-        </div>
-      </div>
-    </div>
-    <!-- Floating info cards -->
-    <div class="hero-float-card hero-float-1">
-      <div class="float-label">Community Reach</div>
-      <div class="float-val">3+ Countries</div>
-      <div class="float-sub">Canada · Kenya · Beyond</div>
-    </div>
-    <div class="hero-float-card hero-float-2">
-      <div class="float-label">Happy Clients</div>
-      <div class="float-val">500+</div>
-      <div class="float-avatars">
-        <div class="float-avatar">JK</div>
-        <div class="float-avatar">MA</div>
-        <div class="float-avatar">SL</div>
-        <div class="float-avatar" style="background:rgba(255,107,107,0.15);color:#FF6B6B">+</div>
-      </div>
-    </div>
-  </div>
->>>>>>> 7079102841cd62161c4efebbaeca773dd7712e68
 </section>
 
 <!-- ═══ ABOUT ═════════════════════════════════════════════════ -->
@@ -987,61 +963,42 @@
   // Trigger hero reveals immediately
   document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
 
-  // ── Make Webhook form submission ──────────────────────────
-  const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL'; // ← paste your Make webhook URL here
+const form = document.getElementById('form');
+const submitBtn = form.querySelector('button[type="submit"]');
 
-  const form = document.getElementById('contactForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const formMsg = document.getElementById('formMsg');
-
-  form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!form.checkValidity()) { form.reportValidity(); return; }
 
+    const formData = new FormData(form);
+    formData.append("access_key", "3422b1fe-2e3c-4e31-b4cd-eb4d5861a033");
+
+    const originalText = submitBtn.textContent;
+
+    submitBtn.textContent = "Sending...";
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-    formMsg.className = 'form-msg';
-
-    const data = new FormData(form);
-    const payload = {
-      first_name:  data.get('first_name'),
-      last_name:   data.get('last_name'),
-      email:       data.get('email'),
-      phone:       data.get('phone') || '',
-      service:     data.get('service'),
-      message:     data.get('message'),
-      submitted_at: new Date().toISOString(),
-      source: 'jackiekariuki.ca'
-    };
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ ...payload, access_key: 3422b1fe-2e3c-4e31-b4cd-eb4d5861a033 })
-      });
-      const result = await res.json();
-      if (result.success) {
-        formMsg.textContent = '✓ Your message has been sent! I\'ll be in touch within 48 hours.';
-        formMsg.className = 'form-msg success';
-        form.reset();
-      } else {
-        throw new Error(result.message || 'Submission failed');
-      }
-          if (res.ok) {
-        formMsg.textContent = '✓ Your message has been sent! I\'ll be in touch within 48 hours.';
-        formMsg.className = 'form-msg success';
-        form.reset();
-      } else {
-        throw new Error('Webhook returned ' + res.status);
-      }
-    } catch (err) {
-      formMsg.textContent = 'Something went wrong. Please email me directly at hello@kariukisocial.com';
-      formMsg.className = 'form-msg error';
+        const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("Success! Your message has been sent.");
+            form.reset();
+        } else {
+            alert("Error: " + data.message);
+        }
+
+    } catch (error) {
+        alert("Something went wrong. Please try again.");
     } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
+});
   });
 </script>
 </body>
